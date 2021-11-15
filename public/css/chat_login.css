@@ -1,0 +1,45 @@
+body
+{
+    background: rgb(160, 2, 107);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:x-large;
+
+}
+.mychat
+{
+    display: flex;
+    justify-content: center;
+    font-size: 45px;
+    transform: translateY(-200px);
+    text-shadow:2px 2px 2px #000000 inset;
+}
+form
+{
+    font-size: 40px;
+    
+}
+form input
+{
+    height: 30px;
+    border: 2px solid;
+    box-shadow: 2px 2px 2px inset;
+    border-radius: 10px;
+    margin-left: 5px;
+    font-size: 25px; 
+    padding-left: 5px;
+}
+.log
+{
+    box-shadow:2px 2px 2px ;
+
+}
+.log:hover
+{
+    transition: 0.2s;
+    background: cornsilk;
+    transform: scale(1.2);
+    border-radius: 5px;
+}

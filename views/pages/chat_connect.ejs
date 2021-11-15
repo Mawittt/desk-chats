@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login to chat</title>
+    <link rel="stylesheet" href="css/chat_login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="mychat" id="mychat" >my vchat</div>
+        <div class="login">
+            <a href="/login">login</a>
+            <form action="/chat" name="myform" method="post">
+                <section>name<input type="text" name="name" placeholder="enter your name" id="names"></section>
+                <section>password<input type="password" name="password"></section>
+                <section><input class="log" type="submit" value="login" name="submit" id="submit"></section>
+            </form>
+        </div>
+    </div>
+
+    <script>
+     var submit = document.getElementById("submit")
+     var names = document.getElementById("names")
+     submit.disabled = true
+     names.addEventListener('input',()=>{
+        submit.disabled = false
+     })
+    </script>
+</body>
+</html>
