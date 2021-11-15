@@ -4,7 +4,7 @@
   "description": "a simple chat app ",
   "main": "index.js",
   "scripts": {
-    "test": "nodemon index.js"
+    "start": "nodemon index.js"
   },
   "author": "Mawit Gad",
   "license": "ISC",
