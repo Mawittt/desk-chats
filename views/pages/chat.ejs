@@ -63,8 +63,8 @@ function refresh(){
                     button.innerHTML = " "  
 
                     ress.forEach( (element) => { 
+        if(((getCookie("recieverid") == element.recieverid ) && (getCookie("userID") ==  element.senderid)) || ((element.senderid == getCookie("recieverid")) && (element.recieverid == getCookie("userID"))))
         
-     if (((getCookie("recieverid") == element.recieverid ) && (getCookie("userID") ==  element.senderid))  || ((element.senderid==sid) && (element.recieverid== getCookie("userID"))) )
         {
            // alert(getCookie("recieverid"))
             //creat the message elements             
