@@ -1,102 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=, initial-scale=1.0">
-    <title>my chat room</title>
-    <link rel="stylesheet" href="css/chat.css">
-</head>
-<body>
-  <button onclick="refresh()">click</button>
-    <div class="cover">
-        <div class="container">
-         <% profiles.forEach((get)=>{ %>
-
-            <div class="each_profile" onclick="func('<%= get.name %>','<%= get.comment%>','<%= get._id %>')">
-                <div class="avatar"> <img src="images/outline_account_circle_black_24dp.png" alt=""></div>
-                <div class="profile">
-                    <div class="name"><%= get.name%></div>
-                    <div class="comment"><%= get.comment %></div>
-                </div>
-            </div>
-            
-
-         <% })%>         
-        </div>
-    </div>
-    <div class="popup" id="mydiv">
-      <div  class="popupName" id="move"><div id="contact" >name</div> <div id="shrink" class="shrink"><img src="images/outline_highlight_off_black_24dp.png" alt="close"></div></div>
-        <div class="chatarea" id="compose" >
-            
-        </div>
-        <div class="compose" >
-            <form action="/chat" method="post">
-               
-                 <section ><input type="text" class="inputmsg" name="message"></section>
-                <section><input type="submit" class="send" id="disable"></section> 
-                <input type="text" name="recieverid"  id="data" value="yes" class="meta">
-                <input type="text" name="senderid"  id="data2" class="meta">
-        </form>
-           
-        </div>
-    </div>
-
-    <script>
-        var refress = true
-        setInterval(()=>{
-            if (refress) {
-                 refresh() 
-                 refress = false 
-            }
-                       
-        },1000)
-        
-function refresh(){
+ 
+/*function refresh(){                
                 var reqq = new XMLHttpRequest()
                 reqq.responseType = "json"
-                reqq.onload = function () {
-                    refress = true
-                    //alert("refreshed")
-                    var ress = reqq.response.name
-                    var button = document.getElementById("compose") 
-                    button.innerHTML = " "  
-
-                    ress.forEach( (element) => { 
-        
-     if (((getCookie("recieverid") == element.recieverid ) && (getCookie("userID") ==  element.senderid))  || ((element.senderid==sid) && (element.recieverid== getCookie("userID"))) )
-        {
-           // alert(getCookie("recieverid"))
-            //creat the message elements             
-             var elle = document.createElement("div");
-            var msg = document.createElement("div");
-            var date = document.createElement("div");
-            //setting the infos
-            msg.innerHTML = element.message ;
-            date.innerHTML = element.date ;
-            
-            contact.innerHTML = getCookie("name")
-            //settting the attributes
-            msg.setAttribute("class","msg")
-            date.setAttribute("class","date")
-            elle.setAttribute("class","elle")
-            //appending the elements
-            elle.appendChild(msg);
-            elle.appendChild(date); 
-            button.appendChild(elle);
+                reqq.onload = function() {
+                  var ress = reqq.response.name
+                       //wipe out the chat area
+             button.innerHTML = " " 
+                    
+             ress.forEach(element => {
+                if (((getCookie("recieverid") == element.recieverid) && (getCookie("userID") ==  element.senderid))  || ((element.senderid==sid) && (element.recieverid== getCookie("userID"))) )
+                {
+                    //creat the message elements             
+                     var elle = document.createElement("div");
+                    var msg = document.createElement("div");
+                    var date = document.createElement("div");
+                    //setting the infos
+                    msg.innerHTML =  element.message ;
+                    date.innerHTML =  element.date ;
+                    contact.innerHTML = getCookie("name")
+                    //settting the attributes
+                    msg.setAttribute("class","msg")
+                    date.setAttribute("class","date")
+                    elle.setAttribute("class","elle")
+                    //appending the elements
+                    elle.appendChild(msg);
+                    elle.appendChild(date); 
+                    button.appendChild(elle);
+                      // alert("checked")
+                }
+                
                
-        }
-        
-       
-     });
-                }                
-               reqq.open("POST", '/refresh')
-               reqq.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
-               reqq.send("var=john")
-               //alert("sent")
-
-}
-
+            });
+                   alert(ress)
+                }
+                reqq.open("POST", "/refresh")
+                reqq.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+                   reqq.send()
+            }
+*/
               
            
 
@@ -144,11 +85,8 @@ if(getCookie("recieverid"))
     //loop through all messages in the data base and selecting the right ones
     
     <% message.forEach(element => { %>
-        
         if (((getCookie("recieverid") == '<%=element.recieverid %>') && (getCookie("userID") == '<%= element.senderid%>'))  || (('<%=element.senderid%>'==sid) && ('<%=element.recieverid%>'== getCookie("userID"))) )
-      // if((getCookie("recieverid") == '<%=element.recieverid %>') && (getCookie("userID") == '<%= element.senderid %>') || (('<%= element.senderid%>' == getCookie("recieverid")) && ('<%element.recieverid%>' == getCookie("userID"))))
         {
-           // alert(getCookie("recieverid"))
             //creat the message elements             
              var elle = document.createElement("div");
             var msg = document.createElement("div");
@@ -156,7 +94,6 @@ if(getCookie("recieverid"))
             //setting the infos
             msg.innerHTML = "<%= element.message %>";
             date.innerHTML = "<%= element.date %>";
-            
             contact.innerHTML = getCookie("name")
             //settting the attributes
             msg.setAttribute("class","msg")
@@ -166,7 +103,7 @@ if(getCookie("recieverid"))
             elle.appendChild(msg);
             elle.appendChild(date); 
             button.appendChild(elle);
-               
+              // alert("checked")
         }
         
        
@@ -200,10 +137,8 @@ function func(name,comment,sid)
      button.innerHTML = " " 
     //loop through all messages in the data base and selecting the right ones
     <% message.forEach(element => { %>
-       // alert("the")
-       // if (((sid == '<%=element.recieverid %>') && (getCookie("userID") == '<%= element.senderid%>')) || (('<%=element.senderid%>'==sid) && ('<%=element.recieverid%>'== getCookie("userID"))) )
-        if(((getCookie("recieverid") == '<%=element.recieverid %>') && (getCookie("userID") == '<%= element.senderid %>')) || (('<%=element.senderid%>' == sid) && ('<%=element.recieverid%>' == getCookie("userID"))))
-       {// alert("one")
+        if (((sid == '<%=element.recieverid %>') && (getCookie("userID") == '<%= element.senderid%>')) || (('<%=element.senderid%>'==sid) && ('<%=element.recieverid%>'== getCookie("userID"))) )
+        {
             //creat the message elements             
              var elle = document.createElement("div");
             var msg = document.createElement("div");
@@ -308,7 +243,3 @@ document.onmousemove = null;
 }
 }
 
-    
-    </script>
-</body>
-</html>
