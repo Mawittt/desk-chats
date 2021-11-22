@@ -10,6 +10,7 @@ const {mongodb, MongoClient} = require('mongodb')
 const uri = "mongodb+srv://mawit-the-great:mawit-the-great@cluster0.b3mx9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 const client = new MongoClient(uri)
 const rclient = new MongoClient(uri)
+const sclient = new MongoClient(uri)
 
 
  /********************************
@@ -282,7 +283,7 @@ app.get('/login',(req,res)=>{
             num++
           })
 
-          console.log(rmessage)
+         
          
            res.json({name : rmessage})
 
@@ -299,6 +300,65 @@ app.get('/login',(req,res)=>{
 
     })
 
+    /*****************************
+     * save message to database ******************************
+     * **************************/
+
+    app.post("/sendMessage",(req,res)=>{
+      var refresh = true
+
+      if (refresh){
+        refresh = false
+
+      async function run(){
+        try{
+
+          await sclient.connect();
+          const database = sclient.db("mychat");
+          const msgs = database.collection("msgs")
+          var doc= req.body
+           
+            //set the variables for the date
+            var h
+            var p
+            var d = new Date()
+
+           //set up the date and time
+           if(d.getHours()>12){
+            h = d.getHours()-12
+            p = "pm"
+           }
+           else if(d.getHours()==12){
+             h= d.getHours()
+             p= "pm"
+           }else{
+             h= d.getHours()
+             p= "am"
+           }
+
+           //append the date and time to the doc.date object
+        doc.date = d.getDate()+"/"+(d.getMonth()+1)+"/"+d.getUTCFullYear()+" "+h+":"+d.getMinutes()+p
+
+         //save the new message to the data base 
+         const savemsg = await msgs.insertOne(doc)
+
+          
+
+
+        }finally {
+          await rclient.close();
+          refresh = true;
+          res.send("done")
+        }
+
+      }
+      run().catch(()=>{console.dir })
+    
+    }
+
+    
+
+    })
  
 
             //app litstening to port

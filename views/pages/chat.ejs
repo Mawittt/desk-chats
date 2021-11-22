@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="css/chat.css">
 </head>
 <body>
-  <button onclick="refresh()">click</button>
     <div class="cover">
         <div class="container">
          <% profiles.forEach((get)=>{ %>
@@ -31,16 +30,17 @@
             
         </div>
         <div class="compose" >
-            <form action="/chat" method="post">
+            <form action="/sendMessage" method="post">
                
-                 <section ><input type="text" class="inputmsg" name="message"></section>
-                <section><input type="submit" class="send" id="disable"></section> 
+                 <section ><input type="text" class="inputmsg" name="message" id="message"></section>
+                <section><input type="button" class="send" id="disable" value="send" ></section> 
                 <input type="text" name="recieverid"  id="data" value="yes" class="meta">
                 <input type="text" name="senderid"  id="data2" class="meta">
         </form>
            
         </div>
     </div>
+  
 
     <script>
         var refress = true
@@ -49,8 +49,12 @@
                  refresh() 
                  refress = false 
             }
-                       
-        },1000)
+            else{
+              document.getElementById("disable").disabled = false
+            }
+ 
+                        
+        },500)
         
 function refresh(){
                 var reqq = new XMLHttpRequest()
@@ -104,11 +108,27 @@ function refresh(){
 
 var disable = document.getElementById("disable")
 disable.disabled = false
+
 disable.addEventListener("click",()=>{
-  setTimeout(()=>{
-    disable.disabled = true
-  },3)
-  
+
+ var message = document.getElementById('message').value
+ var reciever = document.getElementById('data').getAttribute('value')
+ var sender = document.getElementById('data2').getAttribute('value')
+  var msg = "message="+message+"&"+
+            "recieverid="+reciever+"&"+
+            "senderid="+sender;
+document.getElementById('message').value = ""
+            
+           
+
+  //make a connection to server and send the message
+  var sendMessage = new XMLHttpRequest()
+  sendMessage.onload = function () {refress = true; document.getElementById("disable").disabled = true}
+  sendMessage.open("POST", "/sendMessage")
+  sendMessage.setRequestHeader("Content-Type" , "application/x-www-form-urlencoded")
+  sendMessage.send(msg)
+  document.getElementById("disable").disabled = false
+
 })
 if(<%= begin %>)
 {
