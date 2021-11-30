@@ -9,14 +9,27 @@
 </head>
 <body>
     <div class="cover">
+      <div class="links"></div>
+      <div class="update"></div>
         <div class="container">
          <% profiles.forEach((get)=>{ %>
 
-            <div class="each_profile" onclick="func('<%= get.name %>','<%= get.comment%>','<%= get._id %>')">
+            <div class="each_profile" onclick="func('<%= get.name %>','<%= get.comment%>','<%= get._id %>')" data-tilt  data-tilt-reverse="true">
                 <div class="avatar"> <img src="images/outline_account_circle_black_24dp.png" alt=""></div>
                 <div class="profile">
-                    <div class="name"><%= get.name%></div>
+
+                <div class="svg-container">
+                  <svg version= "1.1" class="svg" viewBox="0 0 500 500" 
+                  preserveAspectRatio="xMinYMin meet" >
+                  <path  d = "M 0 200 l 0 -100 q 100 -50 200 0 q 100 50 299.99 0 l 0 100 " stroke ="#b8b9b6" fill =" rgb(160, 2, 107)"/>
+                  </svg>
+                </div>
+
+                <div class="info">
+                   <div class="name"><%= get.name%></div>
                     <div class="comment"><%= get.comment %></div>
+                </div>
+                   
                 </div>
             </div>
             
@@ -41,8 +54,29 @@
         </div>
     </div>
   
-
+    <script src="/javascript/vanilla-tilt.babel.min.js"></script>
     <script>
+      //var msg_box
+     // var ress = []
+     // var msg_container
+    //  var dellete
+     // var delete_container
+     // var msg
+    //  var date
+      var load = true
+      setTimeout(()=>{
+        load = false
+      },30)
+
+     
+       
+      
+
+    
+
+      /**********************
+      *message box refresher******
+      ***********************/                                                  
         var refress = true
         setInterval(()=>{
             if (refress) {
@@ -62,11 +96,12 @@ function refresh(){
                 reqq.onload = function () {
                     refress = true
                     //alert("refreshed")
-                    var ress = reqq.response.name
+                     ress = reqq.response.name
                     var button = document.getElementById("compose") 
-                    button.innerHTML = " "  
+                    button.innerHTML = " " 
+                    refreshh(ress) 
 
-                    ress.forEach( (element) => { 
+                /*    ress.forEach( (element) => { 
         if(((getCookie("recieverid") == element.recieverid ) && (getCookie("userID") ==  element.senderid)) || ((element.senderid == getCookie("recieverid")) && (element.recieverid == getCookie("userID"))))
         
         {
@@ -88,11 +123,16 @@ function refresh(){
             elle.appendChild(msg);
             elle.appendChild(date); 
             button.appendChild(elle);
+
+            //diferentiate between senders and reciever message
+            if(getCookie("userID") == element.senderid)
+            {elle.setAttribute("style","float: right")}
+
                
         }
         
        
-     });
+     }); */
                 }                
                reqq.open("POST", '/refresh')
                reqq.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
@@ -145,58 +185,202 @@ setCookie("userID","<%= coockie%>",2)
 //js funtioning check
 
 
-if(getCookie("recieverid"))
-{
-     // alert("is suppose to chat")
-    //declare meta infos
-    var contact = document.getElementById("contact")
-    var sid = getCookie("recieverid")
-    var button = document.getElementById("compose")  
-    var user = document.getElementById("data2")
-    var friendid = document.getElementById("data")
-    friendid.setAttribute("value",sid)
-    user.setAttribute("value",getCookie("userID"))
-    user.dataset.state = 'valid' 
-    friendid.dataset.state = 'valid'
-   //alert("name :"+name+" comment:"+comment+"secondary id:"+sid+" user id:"+getCookie("userID"))
-     //wipe out the chat area
-     button.innerHTML = " " 
-    //loop through all messages in the data base and selecting the right ones
-    
-    <% message.forEach(element => { %>
-        
-        if (((getCookie("recieverid") == '<%=element.recieverid %>') && (getCookie("userID") == '<%= element.senderid%>'))  || (('<%=element.senderid%>'==sid) && ('<%=element.recieverid%>'== getCookie("userID"))) )
-      // if((getCookie("recieverid") == '<%=element.recieverid %>') && (getCookie("userID") == '<%= element.senderid %>') || (('<%= element.senderid%>' == getCookie("recieverid")) && ('<%element.recieverid%>' == getCookie("userID"))))
+//function to refresh message box
+
+function refreshh(element){
+  var button = document.getElementById("compose") 
+       button.innerHTML = " " 
+  element.forEach( (element) => { 
+    if((((getCookie("recieverid") == element.recieverid ) && (getCookie("userID") ==  element.senderid)) || ((element.senderid == getCookie("recieverid")) && (element.recieverid == getCookie("userID")))) && (getCookie("userID") != element.delete) )
+   
         {
+          
            // alert(getCookie("recieverid"))
             //creat the message elements             
-             var elle = document.createElement("div");
-            var msg = document.createElement("div");
-            var date = document.createElement("div");
+            var  msg_box = document.createElement("div");
+            var  msg_container = document.createElement("div")
+            var  delete_container = document.createElement("div")
+            var  dellete = document.createElement("img")
+            var  msg = document.createElement("div");
+            var  date = document.createElement("div");
+
             //setting the infos
-            msg.innerHTML = "<%= element.message %>";
-            date.innerHTML = "<%= element.date %>";
-            
+            msg.innerHTML = element.message ;
+            date.innerHTML = element.date ;
             contact.innerHTML = getCookie("name")
+
             //settting the attributes
             msg.setAttribute("class","msg")
             date.setAttribute("class","date")
-            elle.setAttribute("class","elle")
+            msg_box.setAttribute("class","msg_box")
+            msg_container.setAttribute("class","msg_container")
+            delete_container.setAttribute("class","delete_container")
+            dellete.setAttribute("class","dellete")
+            dellete.setAttribute("src","images/delete.png")
+            msg_container.setAttribute("onclick","set(dellete)")
+            dellete.setAttribute("id",element._id)
+
             //appending the elements
-            elle.appendChild(msg);
-            elle.appendChild(date); 
-            button.appendChild(elle);
-               
+            msg_container.appendChild(msg);
+            msg_container.appendChild(date);
+            delete_container.appendChild(dellete)
+            msg_box.appendChild(msg_container)
+            msg_box.appendChild(delete_container)
+             //diferentiate between senders and reciever message
+             if(getCookie("userID") == element.senderid)
+            {msg_box.setAttribute("style","float: right")
+            msg_box.innerHTML=""
+            msg_box.appendChild(delete_container)
+            msg_box.appendChild(msg_container)
+            }
+            button.appendChild(msg_box);
+
+            
+            
+            //some actions
+            msg_box.onmouseover = function (){set(element._id)}              
+            msg_box.onmouseout = function(){unset(element._id)}
+            msg_box.onclick = function(){pop_menu(element._id,element.delete,element.message)}
+            dellete.onclick = function(){ del(element._id,"")}
+
+           
+
         }
         
-       
-    <% }); %>
+})
+}
+function set(del,dell)
+{
+ 
+      document.getElementById(del).classList.add("slide_up")
+  
+}
+function unset(del)
+{
+  document.getElementById(del).classList.remove("slide_up")
+}
+function del(del,delll)
+{
+
+    var dell = new XMLHttpRequest()
+    dell.onload = function (){alert(dell.response)}
+    dell.open("POST","/delete")
+    dell.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
+    dell.send("msg="+del+"&user="+getCookie("userID")+"&delete="+delll)
+    alert("deleted")
+}
+function pop_menu(id,el,msgs){
+  //get the pop up
+  var chat_aria = document.getElementById("move")
+
+  //define the menu elements
+  var menu = document.createElement('div')
+  var deleteForMe = document.createElement('div')
+  var deleteForAll = document.createElement('div')
+  var copyMessage = document.createElement('div')
+  var editAndResend = document.createElement('div')
+  var menuContainer = document.createElement('div')
+  var deletForMeIcon = document.createElement('img')
+  var deleteForAllIcon = document.createElement('img')
+  var copyMessageIcon = document.createElement('img')
+  var editAndResendIcon = document.createElement('img')
+  var deleteForMeContainer = document.createElement('div')
+  var deleteForAllContainer = document.createElement('div')
+  var copyMessageContainer = document.createElement("div")
+  var editAndResendContainer = document.createElement("div")
+  var deleteForMeIconContainer = document.createElement("div")
+  var deleteForAllIconContainer = document.createElement("div")
+  var copyMessageIconContainer = document.createElement("div")
+  var editAndResendIconContainer = document.createElement("div")
+
+
+  //assigning the inner htmls
+  deleteForMe.innerHTML = "Delete for me"
+  deleteForAll.innerHTML = "Delete for all"
+  copyMessage.innerHTML = "Copy Message"
+  editAndResend.innerHTML = "Edit and resend"
+  deletForMeIcon.setAttribute("src","images/deleteForMeIcon.png")
+  deleteForAllIcon.setAttribute("src","images/deleteForAllIcon.png")
+  copyMessageIcon.setAttribute("src","images/copyIcon.png")
+  editAndResendIcon.setAttribute("src","images/editIcon.png")
+
+  //setting the classes and attributes
+  menu.classList.add("menu")
+  menuContainer.classList.add("menuContainer")
+  deleteForMe.classList.add("menuItem")
+  deleteForAll.classList.add("menuItem")
+  copyMessage.classList.add("menuItem")
+  editAndResend.classList.add("menuItem")
+  deleteForMeContainer.classList.add("menuitemContainer")
+  deleteForAllContainer.classList.add("menuitemContainer")
+  copyMessageContainer.classList.add("menuitemContainer")
+  editAndResendContainer.classList.add("menuitemContainer")
+  deletForMeIcon.classList.add("icon")
+  deleteForAllIcon.classList.add("icon")
+  copyMessageIcon.classList.add("icon")
+  editAndResendIcon.classList.add("icon")
+  deleteForMeIconContainer.classList.add("iconContainer")
+  deleteForAllIconContainer.classList.add("iconContainer")
+  copyMessageIconContainer.classList.add("iconContainer")
+  editAndResendIconContainer.classList.add("iconContainer")
+  deleteForMeContainer.classList.add("first")
+  editAndResendContainer.classList.add("last")
+
+
+
   
 
+
+
+
+  //appending my children
+  deleteForMeIconContainer.appendChild(deletForMeIcon)
+  deleteForAllIconContainer.appendChild(deleteForAllIcon)
+  copyMessageIconContainer.appendChild(copyMessageIcon)
+  editAndResendIconContainer.appendChild(editAndResendIcon)
+  deleteForMeContainer.appendChild(deleteForMeIconContainer)
+  deleteForMeContainer.appendChild(deleteForMe)
+  deleteForAllContainer.appendChild(deleteForAllIconContainer)
+  deleteForAllContainer.appendChild(deleteForAll)
+  copyMessageContainer.appendChild(copyMessageIconContainer)
+  copyMessageContainer.appendChild(copyMessage)
+  editAndResendContainer.appendChild(editAndResendIconContainer)
+  editAndResendContainer.appendChild(editAndResend)
+  menuContainer.appendChild(deleteForMeContainer)
+  menuContainer.appendChild(deleteForAllContainer)
+  menuContainer.appendChild(copyMessageContainer)
+  menuContainer.appendChild(editAndResendContainer)
+  menu.appendChild(menuContainer)
+  chat_aria.appendChild(menu)
+
+
+  chat_aria.onmouseleave = function (){
+    chat_aria.removeChild(menu)
+  }
+  deleteForMeContainer.onclick = function(){
+    del(id,"")
+  }
+  deleteForAllContainer.onclick = function(){
+    del(id,"definitely")
+  }
+  copyMessageContainer.onclick = function(){
+    navigator.clipboard.writeText(msgs)
+    alert("copied message '"+msgs+"' to clip board.")
+  }
+  editAndResendContainer.onclick=function(){
+    document.getElementById('message').value = msgs
+  }
+  chat_aria.onclick = function(){
+    setTimeout(()=>{
+      chat_aria.removeChild(menu)
+    },300)
+  }
+  
+  
+  
+
+
 }
-
-//function to disable msg send 
-
 
 //fuction for adding message to chat box
 function func(name,comment,sid)
@@ -218,8 +402,12 @@ function func(name,comment,sid)
   // alert("name :"+name+" comment:"+comment+"secondary id:"+sid+" user id:"+getCookie("userID"))
      //wipe out the chat area
      button.innerHTML = " " 
-    //loop through all messages in the data base and selecting the right ones
-    <% message.forEach(element => { %>
+    //loop through all messages in the data base and selecting the right 
+    if (ress == undefined){
+      
+    }
+    refreshh(ress)
+   /*     <% message.forEach(element => { %>
        // alert("the")
        // if (((sid == '<%=element.recieverid %>') && (getCookie("userID") == '<%= element.senderid%>')) || (('<%=element.senderid%>'==sid) && ('<%=element.recieverid%>'== getCookie("userID"))) )
         if(((getCookie("recieverid") == '<%=element.recieverid %>') && (getCookie("userID") == '<%= element.senderid %>')) || (('<%=element.senderid%>' == sid) && ('<%=element.recieverid%>' == getCookie("userID"))))
@@ -240,9 +428,15 @@ function func(name,comment,sid)
             elle.appendChild(date); 
             button.appendChild(elle);
               // alert("checked")
+
+               //diferentiate between senders and reciever message
+             if(getCookie("userID") == "<%=element.senderid%>")
+            {elle.setAttribute("style","float: right")}
+               
         }
 
-    <% }); %>
+    <% }); %>*/
+    
 }
 
     //setting coockies

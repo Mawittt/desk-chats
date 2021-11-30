@@ -7,10 +7,12 @@ const express = require('express')
 const app = express()
 var bodyParser = require("body-parser")
 const {mongodb, MongoClient} = require('mongodb')
+const  ObjectId = require('mongodb').ObjectId;
 const uri = "mongodb+srv://mawit-the-great:mawit-the-great@cluster0.b3mx9.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 const client = new MongoClient(uri)
 const rclient = new MongoClient(uri)
 const sclient = new MongoClient(uri)
+const dclient = new MongoClient(uri)
 
 
  /********************************
@@ -282,7 +284,7 @@ app.get('/login',(req,res)=>{
             rmessage[num] = obj
             num++
           })
-
+          message = rmessage
          
          
            res.json({name : rmessage})
@@ -317,6 +319,9 @@ app.get('/login',(req,res)=>{
           const database = sclient.db("mychat");
           const msgs = database.collection("msgs")
           var doc= req.body
+
+          //adding the delete information field
+          doc.delete = ""
            
             //set the variables for the date
             var h
@@ -356,6 +361,46 @@ app.get('/login',(req,res)=>{
     
     }
 
+    
+
+    })
+
+
+    /********************
+     * deleting messages **********
+     * ******************/
+
+    app.post('/delete',(req,res)=>{
+      async function run(){
+        try{
+
+          await dclient.connect();
+          const database = dclient.db("mychat");
+          const msgs = database.collection("msgs")
+          var doc= req.body
+         
+        if(doc.delete == "")
+        {
+          var stuff = await msgs.updateOne({_id:ObjectId(doc.msg)}, {
+            $set : { delete : doc.user}
+          })
+        }else{
+             
+           console.log("before delete")
+        var stuff = await msgs.deleteOne({_id:ObjectId(doc.msg)})
+        console.log("after delete")
+          
+        }
+        console.log(doc.delete)
+      
+          res.send("done")
+
+        }finally {
+          await dclient.close();
+        }
+
+      }
+      run().catch(()=>{console.dir })
     
 
     })
