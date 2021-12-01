@@ -9,10 +9,25 @@
 </head>
 <body>
     <div class="cover">
-      <div class="links"></div>
-      <div class="update"></div>
+      <div class="links">
+        <div class="disconect" id="disconect">disconnect</div>
+      </div>
+      <div class="update">
+        <div class="user-container">
+          <div class="user-icon-container">
+            <div class="user-icon" id="user_icon"></div>
+          </div>
+          
+          <div class="name" id="uname">Name</div>
+          <div class="comment" id="ucomment">comment</div>
+        </div>
+      </div>
         <div class="container">
-         <% profiles.forEach((get)=>{ %>
+         <% profiles.forEach((get)=>{
+          
+         if (coockie != get._id){
+
+          %>
 
             <div class="each_profile" onclick="func('<%= get.name %>','<%= get.comment%>','<%= get._id %>')" data-tilt  data-tilt-reverse="true">
                 <div class="avatar"> <img src="images/outline_account_circle_black_24dp.png" alt=""></div>
@@ -34,7 +49,7 @@
             </div>
             
 
-         <% })%>         
+         <% }})%>         
         </div>
     </div>
     <div class="popup" id="mydiv">
@@ -69,8 +84,27 @@
       },30)
 
      
+       //the disconnect link
+
+      var logout = document.getElementById("disconect")
+      logout.onclick = function (){
        
+        window.location.href = "/"
+      }
       
+      //check the user
+      <% profiles.forEach((el)=>{ %>
+        var ids = "<%= el._id%>"
+        var user = "<%= coockie%>"
+        if(user==ids)
+        {
+          document.getElementById("uname").innerHTML = "<%= el.name%>"
+          document.getElementById("ucomment").innerHTML = "<%= el.comment %>"
+          document.getElementById("user_icon").innerHTML = "<%= el.name%>".charAt(0)
+        }
+
+
+      <%}) %>
 
     
 
