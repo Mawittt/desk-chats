@@ -377,6 +377,11 @@ form
       visibility: hidden;
       position: fixed;
   }
+  .stackmenu
+  {
+      display: none;
+  }
+  
   @media (max-width: 425px) {
     .popup
     {
@@ -419,6 +424,19 @@ form
     {
         margin-top: 5%;
     }
-
+    .update{
+        
+    }
+    .stackmenu
+    {
+        display : block ;
+    }
+    
   }
-  
+  .menutogle
+  {
+      position: absolute;
+      width: 100%;
+      z-index: 10;
+      height: 100%;
+  }

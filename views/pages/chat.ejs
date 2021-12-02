@@ -12,7 +12,10 @@
       <div class="links">
         <div class="disconect" id="disconect">disconnect</div>
       </div>
-      <div class="update">
+      <div class="update" id="update">
+        <div class="stackmenu" id="stackMenu" >
+          <img src="images/menu.png" alt="menu">
+        </div>
         <div class="user-container">
           <div class="user-icon-container">
             <div class="user-icon" id="user_icon"></div>
@@ -83,6 +86,15 @@
         load = false
       },30)
 
+
+      //the update menu
+      var menu = document.getElementById("stackMenu")
+      var update = document.getElementById("update")
+
+      menu.onclick = function (){
+       update.classList.toggle("menutogle")     
+       
+      }
      
        //the disconnect link
 
@@ -274,7 +286,7 @@ function refreshh(element){
             //some actions
             msg_box.onmouseover = function (){set(element._id)}              
             msg_box.onmouseout = function(){unset(element._id)}
-            msg_box.onclick = function(){pop_menu(element._id,element.delete,element.message)}
+            msg_box.onclick = function(){pop_menu(element._id,element.delete,element.message,element.senderid,element.recieverid)}
             dellete.onclick = function(){ del(element._id,"")}
 
            
@@ -297,13 +309,14 @@ function del(del,delll)
 {
 
     var dell = new XMLHttpRequest()
-    dell.onload = function (){alert(dell.response)}
+    dell.onload = function (){}
     dell.open("POST","/delete")
     dell.setRequestHeader("Content-Type","application/x-www-form-urlencoded")
     dell.send("msg="+del+"&user="+getCookie("userID")+"&delete="+delll)
-    alert("deleted")
+    alert(delll)
+   
 }
-function pop_menu(id,el,msgs){
+function pop_menu(id,el,msgs,sid,rid){
   //get the pop up
   var chat_aria = document.getElementById("move")
 
@@ -311,19 +324,23 @@ function pop_menu(id,el,msgs){
   var menu = document.createElement('div')
   var deleteForMe = document.createElement('div')
   var deleteForAll = document.createElement('div')
+  var deleteForother = document.createElement('div')
   var copyMessage = document.createElement('div')
   var editAndResend = document.createElement('div')
   var menuContainer = document.createElement('div')
   var deletForMeIcon = document.createElement('img')
   var deleteForAllIcon = document.createElement('img')
+  var deleteForOtherIcon = document.createElement('img')
   var copyMessageIcon = document.createElement('img')
   var editAndResendIcon = document.createElement('img')
   var deleteForMeContainer = document.createElement('div')
   var deleteForAllContainer = document.createElement('div')
+  var deleteForOtherContainer = document.createElement('div')
   var copyMessageContainer = document.createElement("div")
   var editAndResendContainer = document.createElement("div")
   var deleteForMeIconContainer = document.createElement("div")
   var deleteForAllIconContainer = document.createElement("div")
+  var deleteForOtherIconContainer = document.createElement("div")
   var copyMessageIconContainer = document.createElement("div")
   var editAndResendIconContainer = document.createElement("div")
 
@@ -331,10 +348,12 @@ function pop_menu(id,el,msgs){
   //assigning the inner htmls
   deleteForMe.innerHTML = "Delete for me"
   deleteForAll.innerHTML = "Delete for all"
+  deleteForother.innerHTML = "Delete for other"
   copyMessage.innerHTML = "Copy Message"
   editAndResend.innerHTML = "Edit and resend"
   deletForMeIcon.setAttribute("src","images/deleteForMeIcon.png")
   deleteForAllIcon.setAttribute("src","images/deleteForAllIcon.png")
+  deleteForOtherIcon.setAttribute("src","images/deleteother.png")
   copyMessageIcon.setAttribute("src","images/copyIcon.png")
   editAndResendIcon.setAttribute("src","images/editIcon.png")
 
@@ -343,18 +362,22 @@ function pop_menu(id,el,msgs){
   menuContainer.classList.add("menuContainer")
   deleteForMe.classList.add("menuItem")
   deleteForAll.classList.add("menuItem")
+  deleteForother.classList.add("menuItem")
   copyMessage.classList.add("menuItem")
   editAndResend.classList.add("menuItem")
   deleteForMeContainer.classList.add("menuitemContainer")
   deleteForAllContainer.classList.add("menuitemContainer")
+  deleteForOtherContainer.classList.add("menuitemContainer")
   copyMessageContainer.classList.add("menuitemContainer")
   editAndResendContainer.classList.add("menuitemContainer")
   deletForMeIcon.classList.add("icon")
   deleteForAllIcon.classList.add("icon")
+  deleteForOtherIcon.classList.add("icon")
   copyMessageIcon.classList.add("icon")
   editAndResendIcon.classList.add("icon")
   deleteForMeIconContainer.classList.add("iconContainer")
   deleteForAllIconContainer.classList.add("iconContainer")
+  deleteForOtherIconContainer.classList.add("iconContainer")
   copyMessageIconContainer.classList.add("iconContainer")
   editAndResendIconContainer.classList.add("iconContainer")
   deleteForMeContainer.classList.add("first")
@@ -370,18 +393,25 @@ function pop_menu(id,el,msgs){
   //appending my children
   deleteForMeIconContainer.appendChild(deletForMeIcon)
   deleteForAllIconContainer.appendChild(deleteForAllIcon)
+  deleteForOtherIconContainer.appendChild(deleteForOtherIcon)
   copyMessageIconContainer.appendChild(copyMessageIcon)
   editAndResendIconContainer.appendChild(editAndResendIcon)
   deleteForMeContainer.appendChild(deleteForMeIconContainer)
   deleteForMeContainer.appendChild(deleteForMe)
   deleteForAllContainer.appendChild(deleteForAllIconContainer)
   deleteForAllContainer.appendChild(deleteForAll)
+  deleteForOtherContainer.appendChild(deleteForOtherIconContainer)
+  deleteForOtherContainer.appendChild(deleteForother)
   copyMessageContainer.appendChild(copyMessageIconContainer)
   copyMessageContainer.appendChild(copyMessage)
   editAndResendContainer.appendChild(editAndResendIconContainer)
   editAndResendContainer.appendChild(editAndResend)
   menuContainer.appendChild(deleteForMeContainer)
-  menuContainer.appendChild(deleteForAllContainer)
+  if(getCookie("userID")==sid)
+  {
+    menuContainer.appendChild(deleteForAllContainer)
+    menuContainer.appendChild(deleteForOtherContainer)
+  }
   menuContainer.appendChild(copyMessageContainer)
   menuContainer.appendChild(editAndResendContainer)
   menu.appendChild(menuContainer)
@@ -395,7 +425,7 @@ function pop_menu(id,el,msgs){
     del(id,"")
   }
   deleteForAllContainer.onclick = function(){
-    del(id,"definitely")
+    del(id,"yes")
   }
   copyMessageContainer.onclick = function(){
     navigator.clipboard.writeText(msgs)
@@ -408,6 +438,9 @@ function pop_menu(id,el,msgs){
     setTimeout(()=>{
       chat_aria.removeChild(menu)
     },300)
+  }
+  deleteForother.onclick = function () {
+    del(id,rid)
   }
   
   

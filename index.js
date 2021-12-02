@@ -384,11 +384,17 @@ app.get('/login',(req,res)=>{
           var stuff = await msgs.updateOne({_id:ObjectId(doc.msg)}, {
             $set : { delete : doc.user}
           })
-        }else{
-             
-           console.log("before delete")
+        }
+        else if (doc.delete == "yes"){
+          
         var stuff = await msgs.deleteOne({_id:ObjectId(doc.msg)})
-        console.log("after delete")
+        
+        }
+        else{
+             
+                    var stuff = await msgs.updateOne({_id:ObjectId(doc.msg)}, {
+            $set : { delete : doc.delete}
+          })
           
         }
         console.log(doc.delete)
